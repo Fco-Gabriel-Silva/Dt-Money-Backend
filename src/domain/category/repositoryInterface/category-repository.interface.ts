@@ -17,6 +17,8 @@ export interface IUpdateCategoryInput {
 export interface ICategoryRepository {
   createCategory(data: ICreateCategoryInput): Promise<TransactionCategory>;
 
+  findCategoriesByUserId(userId: number): Promise<TransactionCategory[]>;
+
   findByNameAndUser(
     name: string,
     userId: number,

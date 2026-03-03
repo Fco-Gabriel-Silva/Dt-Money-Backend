@@ -1,4 +1,4 @@
-import { Repository, UpdateResult } from "typeorm";
+import { IsNull, Repository, UpdateResult } from "typeorm";
 import { DtMoneyDataSource } from "../data-source";
 import { TransactionCategory } from "../entities/TransactionCategory";
 import {
@@ -27,6 +27,19 @@ export class CategoryTypeormRepository implements ICategoryRepository {
       return await this.repository.save(category);
     } catch (error) {
       throw new DatabaseError("Falha ao criar categoria", error as Error);
+    }
+  }
+
+  async findCategoriesByUserId(userId: number): Promise<TransactionCategory[]> {
+    try {
+      return await this.repository.find({
+        where: [{ userId: userId }, { userId: IsNull() }],
+        order: {
+          name: "ASC",
+        },
+      });
+    } catch (error) {
+      throw new DatabaseError("Falha ao buscar categorias", error as Error);
     }
   }
 

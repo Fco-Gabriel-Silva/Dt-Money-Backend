@@ -19,6 +19,6 @@ export class CreateCategoryUseCase {
       ]);
     }
 
-    return await this.categoryRepository.create(data);
+    return await this.categoryRepository.createCategory(data);
   }
 }

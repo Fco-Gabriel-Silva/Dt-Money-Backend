@@ -13,7 +13,7 @@ export class CreateCategoryController {
     reply: FastifyReply,
   ) => {
     const { name, color } = request.body;
-    const userId = request.user.id; // Pegando o usuário logado perfeitamente!
+    const userId = request.user.id;
 
     const repository = new CategoryTypeormRepository();
     const useCase = new CreateCategoryUseCase(repository);

@@ -30,4 +30,6 @@ export interface ICategoryRepository {
   ): Promise<TransactionCategory | null>;
 
   updateCategory(data: IUpdateCategoryInput): Promise<TransactionCategory>;
+
+  deleteCategory(id: number): Promise<void>;
 }

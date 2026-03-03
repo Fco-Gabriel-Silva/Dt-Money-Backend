@@ -70,4 +70,12 @@ export class CategoryTypeormRepository implements ICategoryRepository {
       throw new DatabaseError("Falha ao editar categoria", error as Error);
     }
   }
+
+  async deleteCategory(id: number): Promise<void> {
+    try {
+      await this.repository.softDelete(id);
+    } catch (error) {
+      throw new DatabaseError("Falha ao excluir categoria", error as Error);
+    }
+  }
 }

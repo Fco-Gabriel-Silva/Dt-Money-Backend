@@ -8,12 +8,17 @@ export const configure = (fastify: FastifyInstance) => {
     .prop("errors", S.array().items(S.string()))
     .description("Erro de validação.");
 
+  const badRequestResponse = S.object()
+    .id("BadRequest")
+    .prop("message", S.string())
+    .description("Requisição mal formatada.");
+
   const businessErrorResponse = S.object()
     .id("BusinessError")
     .prop("message", S.string())
     .prop(
       "internalErrorCode",
-      S.number().enum([1]).description("1 - Username already registered")
+      S.number().enum([1]).description("1 - Username already registered"),
     );
 
   const forbiddenResponse = S.object()
@@ -66,11 +71,11 @@ export const configure = (fastify: FastifyInstance) => {
     .prop("typeId", S.number().required())
     .prop(
       "type",
-      S.oneOf([S.object().prop("id", S.number()).prop("name", S.string())])
+      S.oneOf([S.object().prop("id", S.number()).prop("name", S.string())]),
     )
     .prop(
       "category",
-      S.oneOf([S.object().prop("id", S.number()).prop("name", S.string())])
+      S.oneOf([S.object().prop("id", S.number()).prop("name", S.string())]),
     )
     .prop("createdAt", S.string())
     .prop("updatedAt", S.string())
@@ -92,4 +97,5 @@ export const configure = (fastify: FastifyInstance) => {
   fastify.addSchema(notFoundErrorResponse);
   fastify.addSchema(unauthorizedErrorResponse);
   fastify.addSchema(errorResponse);
+  fastify.addSchema(badRequestResponse);
 };

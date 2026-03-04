@@ -33,7 +33,7 @@ export class CategoryTypeormRepository implements ICategoryRepository {
   async findCategoriesByUserId(userId: number): Promise<TransactionCategory[]> {
     try {
       return await this.repository.find({
-        where: [{ userId: userId }, { userId: IsNull() }],
+        where: [{ userId: userId }],
         order: {
           name: "ASC",
         },

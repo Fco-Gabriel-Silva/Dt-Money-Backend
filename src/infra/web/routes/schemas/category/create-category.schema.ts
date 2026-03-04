@@ -3,7 +3,7 @@ import S from "fluent-json-schema";
 
 const body = S.object()
   .prop("name", S.string().required())
-  .prop("color", S.string());
+  .prop("color", S.string().required());
 
 export const createCategorySchema: FastifySchema = {
   tags: ["Category"],

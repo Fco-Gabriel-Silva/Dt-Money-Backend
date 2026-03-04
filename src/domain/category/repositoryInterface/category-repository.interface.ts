@@ -3,7 +3,7 @@ import { TransactionCategory } from "../../../infra/database/typeorm/dt-money/en
 
 export interface ICreateCategoryInput {
   name: string;
-  color?: string;
+  color: string;
   userId: number;
 }
 

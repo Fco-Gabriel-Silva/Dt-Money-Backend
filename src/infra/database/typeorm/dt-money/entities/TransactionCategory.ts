@@ -20,17 +20,16 @@ export class TransactionCategory {
   @Column({ name: "name", type: "varchar", nullable: false })
   name: string;
 
-  @Column({ name: "color", type: "varchar", nullable: true })
+  @Column({ name: "color", type: "varchar", nullable: false })
   color?: string;
 
-  // nullable: true porque as categorias padrão (do seeder) não tem dono
-  @Column({ name: "user_id", type: "int", nullable: true })
+  @Column({ name: "user_id", type: "int", nullable: false })
   userId?: number;
 
   @CreateDateColumn({
     name: "created_at",
     type: "datetime",
-    nullable: false, // Pode usar default: "CURRENT_TIMESTAMP" dependendo da sua config
+    nullable: false,
   })
   createdAt: Date;
 

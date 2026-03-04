@@ -1,9 +1,10 @@
-import { Repository } from "typeorm";
+import { IsNull, Repository, UpdateResult } from "typeorm";
 import { DtMoneyDataSource } from "../data-source";
 import { TransactionCategory } from "../entities/TransactionCategory";
 import {
   ICategoryRepository,
   ICreateCategoryInput,
+  IUpdateCategoryInput,
 } from "../../../../../domain/category/repositoryInterface/category-repository.interface";
 import { DatabaseError } from "../../../../../shared/errors/database.error";
 
@@ -14,7 +15,9 @@ export class CategoryTypeormRepository implements ICategoryRepository {
     this.repository = DtMoneyDataSource.getRepository(TransactionCategory);
   }
 
-  async create(data: ICreateCategoryInput): Promise<TransactionCategory> {
+  async createCategory(
+    data: ICreateCategoryInput,
+  ): Promise<TransactionCategory> {
     try {
       const category = this.repository.create({
         name: data.name,
@@ -27,6 +30,19 @@ export class CategoryTypeormRepository implements ICategoryRepository {
     }
   }
 
+  async findCategoriesByUserId(userId: number): Promise<TransactionCategory[]> {
+    try {
+      return await this.repository.find({
+        where: [{ userId: userId }],
+        order: {
+          name: "ASC",
+        },
+      });
+    } catch (error) {
+      throw new DatabaseError("Falha ao buscar categorias", error as Error);
+    }
+  }
+
   async findByNameAndUser(
     name: string,
     userId: number,
@@ -34,5 +50,32 @@ export class CategoryTypeormRepository implements ICategoryRepository {
     return this.repository.findOne({
       where: { name, userId },
     });
+  }
+
+  async findByIdAndUser(
+    id: number,
+    userId: number,
+  ): Promise<TransactionCategory | null> {
+    return this.repository.findOne({
+      where: { id, userId },
+    });
+  }
+
+  async updateCategory(
+    data: IUpdateCategoryInput,
+  ): Promise<TransactionCategory> {
+    try {
+      return await this.repository.save(data);
+    } catch (error) {
+      throw new DatabaseError("Falha ao editar categoria", error as Error);
+    }
+  }
+
+  async deleteCategory(id: number): Promise<void> {
+    try {
+      await this.repository.softDelete(id);
+    } catch (error) {
+      throw new DatabaseError("Falha ao excluir categoria", error as Error);
+    }
   }
 }

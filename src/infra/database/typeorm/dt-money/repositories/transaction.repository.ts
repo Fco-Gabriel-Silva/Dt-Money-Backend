@@ -20,7 +20,7 @@ export class TransactionRepository implements TransactionRepositoryInterface {
   }
 
   async createTransaction(
-    params: CreateTranscationParams
+    params: CreateTranscationParams,
   ): Promise<Transaction> {
     try {
       const transaction = await this.transactionRepository.save(params);
@@ -70,6 +70,7 @@ export class TransactionRepository implements TransactionRepositoryInterface {
     try {
       const query = this.transactionRepository
         .createQueryBuilder("transaction")
+        .withDeleted()
         .leftJoinAndSelect("transaction.type", "type")
         .leftJoinAndSelect("transaction.category", "category")
         .select([
@@ -77,7 +78,8 @@ export class TransactionRepository implements TransactionRepositoryInterface {
           "COALESCE(SUM(CASE WHEN transaction.typeId = 2 THEN transaction.value ELSE 0 END), 0) AS totalExpense",
           "COALESCE(SUM(CASE WHEN transaction.typeId = 1 THEN transaction.value ELSE 0 END), 0) - COALESCE(SUM(CASE WHEN transaction.typeId = 2 THEN transaction.value ELSE 0 END), 0) AS total",
         ])
-        .where("transaction.userId = :userId", { userId });
+        .where("transaction.userId = :userId", { userId })
+        .andWhere("transaction.deletedAt IS NULL");
       if (filters?.from) {
         query.andWhere("transaction.createdAt >= :from", {
           from: filters.from,
@@ -117,7 +119,7 @@ export class TransactionRepository implements TransactionRepositoryInterface {
               .orWhere("transaction.description LIKE :searchText", {
                 searchText: `%${searchText}%`,
               });
-          })
+          }),
         );
       }
 
@@ -149,19 +151,21 @@ export class TransactionRepository implements TransactionRepositoryInterface {
 
       const query = this.transactionRepository
         .createQueryBuilder("transaction")
+        .withDeleted()
         .leftJoinAndSelect("transaction.type", "type")
         .leftJoinAndSelect("transaction.category", "category");
 
       if (sort?.id) {
         query.addOrderBy(
           "transaction.id",
-          sort.id.toUpperCase() as "ASC" | "DESC"
+          sort.id.toUpperCase() as "ASC" | "DESC",
         );
       } else {
         query.addOrderBy("transaction.id", "DESC");
       }
 
       query.where("transaction.userId = :userId", { userId });
+      query.andWhere("transaction.deletedAt IS NULL");
 
       if (searchText) {
         query.andWhere(
@@ -178,7 +182,7 @@ export class TransactionRepository implements TransactionRepositoryInterface {
               .orWhere("transaction.description LIKE :searchText", {
                 searchText: `%${searchText}%`,
               });
-          })
+          }),
         );
       }
 

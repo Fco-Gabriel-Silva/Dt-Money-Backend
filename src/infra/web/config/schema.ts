@@ -8,12 +8,17 @@ export const configure = (fastify: FastifyInstance) => {
     .prop("errors", S.array().items(S.string()))
     .description("Erro de validação.");
 
+  const badRequestResponse = S.object()
+    .id("BadRequest")
+    .prop("message", S.string())
+    .description("Requisição mal formatada.");
+
   const businessErrorResponse = S.object()
     .id("BusinessError")
     .prop("message", S.string())
     .prop(
       "internalErrorCode",
-      S.number().enum([1]).description("1 - Username already registered")
+      S.number().enum([1]).description("1 - Username already registered"),
     );
 
   const forbiddenResponse = S.object()
@@ -49,7 +54,12 @@ export const configure = (fastify: FastifyInstance) => {
   const category = S.object()
     .id("Category")
     .prop("id", S.number())
-    .prop("name", S.string());
+    .prop("name", S.string())
+    .prop("color", S.string())
+    .prop("userId", S.anyOf([S.number(), S.null()]))
+    .prop("createdAt", S.string())
+    .prop("updatedAt", S.string())
+    .prop("deletedAt", S.anyOf([S.string(), S.null()]));
 
   const totalTransactions = S.object()
     .id("TotalTransactions")
@@ -61,20 +71,14 @@ export const configure = (fastify: FastifyInstance) => {
     .id("Transaction")
     .prop("id", S.number().required())
     .prop("value", S.number().required())
-    .prop("description", S.string().required())
+    .prop("description", S.anyOf([S.string(), S.null()]))
     .prop("categoryId", S.number().required())
     .prop("typeId", S.number().required())
-    .prop(
-      "type",
-      S.oneOf([S.object().prop("id", S.number()).prop("name", S.string())])
-    )
-    .prop(
-      "category",
-      S.oneOf([S.object().prop("id", S.number()).prop("name", S.string())])
-    )
+    .prop("type", S.ref("Type#"))
+    .prop("category", S.anyOf([S.ref("Category#"), S.null()]))
     .prop("createdAt", S.string())
     .prop("updatedAt", S.string())
-    .prop("deletedAt", S.oneOf([S.string().format("date-time"), S.null()]));
+    .prop("deletedAt", S.anyOf([S.string(), S.null()]));
 
   const orderDirection = S.string()
     .enum(["ASC", "asc", "DESC", "desc"])
@@ -92,4 +96,5 @@ export const configure = (fastify: FastifyInstance) => {
   fastify.addSchema(notFoundErrorResponse);
   fastify.addSchema(unauthorizedErrorResponse);
   fastify.addSchema(errorResponse);
+  fastify.addSchema(badRequestResponse);
 };

@@ -1,16 +1,15 @@
 import { FastifySchema } from "fastify";
 import S from "fluent-json-schema";
 
-const body = S.object()
-  .prop("name", S.string().required())
-  .prop("color", S.string().required());
+const params = S.object().prop("id", S.number().required());
 
-export const createCategorySchema: FastifySchema = {
+export const deleteCategorySchema: FastifySchema = {
   tags: ["Category"],
-  body,
+  params,
   security: [{ bearerAuth: [] }],
   response: {
-    201: S.ref("Category#"),
+    204: { type: "null" },
+    400: { $ref: "BadRequest#" },
     401: { $ref: "Unauthorized#" },
     422: { $ref: "UnprocessableEntity#" },
     500: { $ref: "ServerError#" },

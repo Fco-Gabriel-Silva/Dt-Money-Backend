@@ -8,7 +8,7 @@ import * as Schema from "./infra/web/config/schema";
 import * as ErrorHandler from "./infra/web/config/error-handler";
 
 (async () => {
-  const app = fastify();
+  const app = fastify({ logger: true });
 
   ErrorHandler.configure(app);
 
@@ -22,12 +22,13 @@ import * as ErrorHandler from "./infra/web/config/error-handler";
 
   Routes.register(app);
 
-  app.listen(
-    {
+  try {
+    await app.listen({
       port: 3001,
-    },
-    () => {
-      console.log("Api rodando na porta 3001");
-    }
-  );
+    });
+    console.log("🚀 Api rodando na porta 3001 e aberta para a rede!");
+  } catch (err) {
+    console.error("❌ Erro fatal ao ligar o servidor:", err);
+    process.exit(1);
+  }
 })();

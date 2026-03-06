@@ -42,6 +42,8 @@ export const configure = (fastify: FastifyInstance) => {
     .prop("id", S.number())
     .prop("name", S.string())
     .prop("email", S.string())
+    .prop("phone", S.string())
+    .prop("avatarUrl", S.string())
     .prop("createdAt", S.string())
     .prop("updatedAt", S.string())
     .prop("deletedAt", S.oneOf([S.string().format("date-time"), S.null()]));

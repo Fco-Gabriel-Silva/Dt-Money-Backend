@@ -1,9 +1,11 @@
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import { Transaction } from "./Transaction";
 
@@ -21,6 +23,12 @@ export class User {
   @Column({ name: "password", type: "varchar", nullable: false })
   password: string;
 
+  @Column({ name: "avatar_url", type: "varchar", nullable: true })
+  avatarUrl: string | null;
+
+  @Column({ name: "phone", type: "varchar", nullable: true })
+  phone: string | null;
+
   @CreateDateColumn({
     name: "created_at",
     type: "datetime",
@@ -28,6 +36,16 @@ export class User {
   })
   createdAt: Date;
 
-  @OneToMany(() => Transaction, (transaction) => transaction.category)
+  @UpdateDateColumn({
+    name: "updated_at",
+    type: "datetime",
+    nullable: false,
+  })
+  updatedAt: Date;
+
+  @DeleteDateColumn({ name: "deleted_at", type: "datetime", nullable: true })
+  deletedAt: Date | null;
+
+  @OneToMany(() => Transaction, (transaction) => transaction.user)
   transactions: Transaction[];
 }

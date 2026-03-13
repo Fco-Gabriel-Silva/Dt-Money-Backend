@@ -47,7 +47,7 @@ export class CategoryTypeormRepository implements ICategoryRepository {
     name: string,
     userId: number,
   ): Promise<TransactionCategory | null> {
-    return this.repository.findOne({
+    return await this.repository.findOne({
       where: { name, userId },
     });
   }
@@ -56,7 +56,7 @@ export class CategoryTypeormRepository implements ICategoryRepository {
     id: number,
     userId: number,
   ): Promise<TransactionCategory | null> {
-    return this.repository.findOne({
+    return await this.repository.findOne({
       where: { id, userId },
     });
   }

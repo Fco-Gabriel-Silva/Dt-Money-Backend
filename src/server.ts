@@ -4,6 +4,7 @@ import "dotenv/config";
 import * as Swagger from "./infra/web/config/swagger";
 import * as Database from "./infra/database/";
 import * as Cors from "./infra/web/config/cors";
+import * as Multipart from "./infra/web/config/multipart";
 import * as Schema from "./infra/web/config/schema";
 import * as ErrorHandler from "./infra/web/config/error-handler";
 
@@ -17,6 +18,8 @@ import * as ErrorHandler from "./infra/web/config/error-handler";
   await Swagger.configure(app);
 
   await Cors.register(app);
+
+  await Multipart.register(app);
 
   await Database.connect();
 
